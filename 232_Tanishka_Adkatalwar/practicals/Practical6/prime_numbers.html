@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prime Number Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .description {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #2e7d32;
+        }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .form-row > div {
+            flex: 1;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .error {
+            color: #f44336;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+        .result-container {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: none;
+        }
+        .result-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2196F3;
+        }
+        .prime-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .prime-number {
+            background-color: #2196F3;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Prime Number Finder</h1>
+        
+        <div class="description">
+            <strong>Problem:</strong> Find all prime numbers between a starting and ending number.<br>
+            <strong>Input:</strong> A starting number and an ending number.<br>
+            <strong>Output:</strong> All prime numbers between the starting and ending number.
+        </div>
+        
+        <form id="primeForm">
+            <div class="form-row">
+                <div>
+                    <label for="startNumber">Starting Number:</label>
+                    <input type="number" id="startNumber" min="1" placeholder="Enter starting number">
+                    <div class="error" id="startError">Please enter a valid starting number</div>
+                </div>
+                
+                <div>
+                    <label for="endNumber">Ending Number:</label>
+                    <input type="number" id="endNumber" min="1" placeholder="Enter ending number">
+                    <div class="error" id="endError">Please enter a valid ending number</div>
+                </div>
+            </div>
+            
+            <button type="submit">Find Prime Numbers</button>
+        </form>
+        
+        <div class="result-container" id="resultContainer">
+            <div class="result-header">Prime Numbers Found:</div>
+            
+            <div class="prime-numbers" id="primeList"></div>
+            
+            <div class="stats">
+                <div>
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total Primes</div>
+                </div>
+                
+                <div>
+                    <div class="stat-value" id="rangeSize">0</div>
+                    <div class="stat-label">Range Size</div>
+                </div>
+                
+                <div>
+                    <div class="stat-value" id="percentage">0%</div>
+                    <div class="stat-label">Percentage</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('primeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            findPrimeNumbers();
+        });
+        
+        function findPrimeNumbers() {
+            const start = parseInt(document.getElementById('startNumber').value);
+            const end = parseInt(document.getElementById('endNumber').value);
+            const startError = document.getElementById('startError');
+            const endError = document.getElementById('endError');
+            
+            // Validate inputs
+            let hasError = false;
+            
+            if (isNaN(start) || start < 1) {
+                startError.style.display = 'block';
+                hasError = true;
+            } else {
+                startError.style.display = 'none';
+            }
+            
+            if (isNaN(end) || end < 1) {
+                endError.style.display = 'block';
+                hasError = true;
+            } else {
+                endError.style.display = 'none';
+            }
+            
+            if (start > end) {
+                endError.textContent = 'Ending number must be greater than or equal to starting number';
+                endError.style.display = 'block';
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            // Find and display prime numbers
+            const primes = findPrimesInRange(start, end);
+            displayResults(primes, start, end);
+        }
+        
+        function isPrime(num) {
+            if (num <= 1) return false;
+            if (num <= 3) return true;
+            if (num % 2 === 0 || num % 3 === 0) return false;
+            
+            for (let i = 5; i * i <= num; i += 6) {
+                if (num % i === 0 || num % (i + 2) === 0) return false;
+            }
+            
+            return true;
+        }
+        
+        function findPrimesInRange(start, end) {
+            const primes = [];
+            for (let i = start; i <= end; i++) {
+                if (isPrime(i)) primes.push(i);
+            }
+            return primes;
+        }
+        
+        function displayResults(primes, start, end) {
+            const primeList = document.getElementById('primeList');
+            primeList.innerHTML = '';
+            
+            document.getElementById('resultContainer').style.display = 'block';
+            
+            if (primes.length > 0) {
+                primes.forEach(prime => {
+                    const primeElement = document.createElement('div');
+                    primeElement.className = 'prime-number';
+                    primeElement.textContent = prime;
+                    primeList.appendChild(primeElement);
+                });
+            } else {
+                primeList.innerHTML = '<div style="color:#f44336;font-style:italic">No prime numbers found in this range.</div>';
+            }
+            
+            const range = end - start + 1;
+            const primePercentage = (primes.length / range * 100).toFixed(2);
+            
+            document.getElementById('totalCount').textContent = primes.length;
+            document.getElementById('rangeSize').textContent = range;
+            document.getElementById('percentage').textContent = primePercentage + '%';
+        }
+    </script>
+</body>
+</html>

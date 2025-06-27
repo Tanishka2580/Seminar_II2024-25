@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String and Number Functions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            width: 450px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        h2 {
+            color: #2196F3;
+            margin-top: 0;
+        }
+        .function-description {
+            background-color: #e8f5e9;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-style: italic;
+            color: #2e7d32;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .result span {
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .error {
+            color: #f44336;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>String and Number Functions</h1>
+        
+        <!-- String Length Section -->
+        <div class="section">
+            <h2>String Length Calculator</h2>
+            
+            <div class="function-description">
+                <strong>Function:</strong> Calculate the length of a given string<br>
+                <strong>Parameter:</strong> A string<br>
+                <strong>Output:</strong> Length of the string
+            </div>
+            
+            <label for="inputString">Enter a String:</label>
+            <input type="text" id="inputString" placeholder="Type any text here...">
+            <div class="error" id="stringError">Please enter a string</div>
+            
+            <button onclick="calculateStringLength()">Calculate Length</button>
+            
+            <div class="result" id="stringResult">
+                Length: <span>0</span>
+            </div>
+        </div>
+        
+        <!-- Number Reverse Section -->
+        <div class="section">
+            <h2>Number Digit Reverser</h2>
+            
+            <div class="function-description">
+                <strong>Function:</strong> Reverse the digits of a given number<br>
+                <strong>Parameter:</strong> A number<br>
+                <strong>Output:</strong> The number with its digits in reverse order
+            </div>
+            
+            <label for="inputNumber">Enter a Number:</label>
+            <input type="number" id="inputNumber" placeholder="Enter any number...">
+            <div class="error" id="numberError">Please enter a valid number</div>
+            
+            <button onclick="reverseNumberDigits()">Reverse Digits</button>
+            
+            <div class="result" id="numberResult">
+                Reversed: <span>0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to calculate the length of a string
+        function calculateStringLength() {
+            const inputString = document.getElementById('inputString').value;
+            const stringError = document.getElementById('stringError');
+            
+            if (inputString === '') {
+                stringError.style.display = 'block';
+                return;
+            }
+            
+            stringError.style.display = 'none';
+            document.querySelector('#stringResult span').textContent = getStringLength(inputString);
+        }
+        
+        // Function to get the length of a string
+        function getStringLength(str) {
+            return str.length;
+        }
+        
+        // Function to reverse the digits of a number
+        function reverseNumberDigits() {
+            const inputNumber = document.getElementById('inputNumber').value;
+            const numberError = document.getElementById('numberError');
+            
+            if (inputNumber === '' || isNaN(inputNumber)) {
+                numberError.style.display = 'block';
+                return;
+            }
+            
+            numberError.style.display = 'none';
+            document.querySelector('#numberResult span').textContent = reverseDigits(parseInt(inputNumber));
+        }
+        
+        // Function to reverse the digits of a number
+        function reverseDigits(num) {
+            return parseInt(num.toString().split('').reverse().join(''));
+        }
+    </script>
+</body>
+</html>
